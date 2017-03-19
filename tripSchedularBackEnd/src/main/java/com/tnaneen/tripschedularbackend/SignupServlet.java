@@ -42,6 +42,7 @@ public class SignupServlet extends HttpServlet {
             if(check==false){
                 User user=new User(email,password);
                 db.addUser(user);
+                out.print("done");
             }
             else{
             out.print("user already exist");
