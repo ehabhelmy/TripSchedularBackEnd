@@ -5,6 +5,8 @@
  */
 package com.tnaneen.tripschedularbackend;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author ehabm
@@ -18,11 +20,22 @@ public class Trip {
     String destination;
     Long date;
     Long duration;
-    Notes []notes;
+    ArrayList<Notes>notes;
 
     public Trip() {
     }
-
+    public Trip(int id,String name,Long duration,Long date,String status,String avespeed,String source,String destination,ArrayList<Notes>notes) {    
+        this.id=id;
+        this.name=name;
+        this.duration=duration;
+        this.date=date; 
+        this.status=status;
+        this.aveSpeeed=avespeed;
+        this.source=source;
+        this.destination=destination;
+        this.notes=notes;
+    }
+    
     public Long getDate() {
         return date;
     }
@@ -39,11 +52,11 @@ public class Trip {
         this.duration = duration;
     }
 
-    public Notes[] getNotes() {
+    public ArrayList<Notes> getNotes() {
         return notes;
     }
 
-    public void setNotes(Notes[] notes) {
+    public void setNotes(ArrayList<Notes> notes) {
         this.notes = notes;
     }
 
