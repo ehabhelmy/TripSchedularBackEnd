@@ -29,7 +29,7 @@ import javax.imageio.ImageIO;
  */
 public class DatabaseHandler {
 
-    private final String URL = "jdbc:mysql://localhost/ecommerce";
+    private final String URL = "jdbc:mysql://localhost/TripSchedular";
     private final String userName = "root";
     private final String password = "";
     private Connection conn;
@@ -59,7 +59,7 @@ public class DatabaseHandler {
    
     public void addUser(User user){
         try {
-            pst=conn.prepareStatement("INSERT INTO USER VALUES (?,?)");
+            pst=conn.prepareStatement("INSERT INTO USERS VALUES (?,?)");
             pst.setString(1, user.getEmail());
             pst.setString(2, user.getPassword());
             pst.executeUpdate();
@@ -68,12 +68,11 @@ public class DatabaseHandler {
         }
     }
     
-    public boolean checkUser(User user){
+    public boolean checkUser(String email,String password){
         try {
-            pst=conn.prepareStatement("SELECT * FROM USER WHERE EMAIL=? AND PASSWORD=? AND ID=?");
-            pst.setString(1, user.getEmail());
-            pst.setString(2, user.getPassword());
-            pst.setInt(3, user.getId());
+            pst=conn.prepareStatement("SELECT * FROM USERS WHERE EMAIL=? AND PASSWORD=?");
+            pst.setString(1, email);
+            pst.setString(2, password);
             rs=pst.executeQuery();
             if(rs.next()){
                 return true;
