@@ -5,8 +5,12 @@
  */
 package com.tnaneen.tripschedularbackend;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.ProcessBuilder.Redirect.Type;
+import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -33,16 +37,23 @@ public class SynchServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet SynchServlet</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet SynchServlet at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
+            // ArrayList<Trip> trips = (ArrayList<Trip>)request.getAttribute("trips");
+            String email = request.getParameter("email");
+            String jsonString = request.getParameter("trips");
+            Gson gson = new Gson();
+            //parse json to arraylist of trips
+            ArrayList<Trip> trips;
+            java.lang.reflect.Type type = new TypeToken<ArrayList<Trip>>() {}.getType();
+            trips = gson.fromJson(jsonString, type);
+            System.out.println("----jsonString: " + jsonString);
+            System.out.println("-----Arr length: " + trips.size());
+
+            DatabaseHandler db = new DatabaseHandler();
+            db.deleteAllUserTrip(email);
+            for (int i = 0; i < trips.size(); i++) {
+                db.addTrip(trips.get(i));
+            }
+
         }
     }
 
