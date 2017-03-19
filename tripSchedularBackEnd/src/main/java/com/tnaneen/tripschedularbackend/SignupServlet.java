@@ -40,7 +40,9 @@ public class SignupServlet extends HttpServlet {
             DatabaseHandler db=new DatabaseHandler();
             boolean check=db.checkUser(email,password);
             if(check==false){
-                User user=new User(email,password);
+                User user=new User();
+                user.setEmail(email);
+                user.setPassword(password);
                 db.addUser(user);
                 out.print("done");
             }
