@@ -33,16 +33,20 @@ public class SignupServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet SignupServlet</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet SignupServlet at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
+          
+            String email = request.getParameter("email");
+            String password = request.getParameter("password");
+           
+            DatabaseHandler db=new DatabaseHandler();
+            boolean check=db.checkUser(email,password);
+            if(check==false){
+                User user=new User(email,password);
+                db.addUser(user);
+            }
+            else{
+            out.print("user already exist");
+            }
+            
         }
     }
 
