@@ -34,21 +34,44 @@ public class LoginServlet extends HttpServlet {
             throws ServletException, IOException {
         String email=request.getParameter("email");
         String password=request.getParameter("password");
+        String flag=request.getParameter("flag");
         PrintWriter out=response.getWriter();
-        if(email.contains("@"))
+        if(flag.equals("app"))
         {
-            
+            if(new DatabaseHandler().checkUser(email, password))
+            {
+                response.setContentType("application/json");
+                User user=new User();
+                user.setEmail(email);
+                user.setPassword(password);
+                user.setId(new DatabaseHandler().getUserId(email));
+                out.print(new DatabaseHandler().getUserTrips(user));
+                out.flush();
+            }
+            else
+            {
+                User user=new User();
+                user.setEmail(email);
+                user.setPassword(password);
+                new DatabaseHandler().addUser(user);
+            }
         }
         else
         {
             if(new DatabaseHandler().checkUser(email,password))
             {
                 response.setContentType("application/json");
-                //out.print(new DatabaseHandler().);
+                User user=new User();
+                user.setEmail(email);
+                user.setPassword(password);
+                user.setId(new DatabaseHandler().getUserId(email));
+                out.print(new DatabaseHandler().getUserTrips(user));
+                out.flush();
             }
             else
             {
-                
+                out.print("not exist");
+                out.flush();
             }
         }
     }
