@@ -29,9 +29,9 @@ import javax.imageio.ImageIO;
  */
 public class DatabaseHandler {
 
-    private final String URL = "jdbc:mysql://localhost/ecommerce";
+    private final String URL = "jdbc:mysql://localhost/TripSchedular";
     private final String userName = "root";
-    private final String password = "";
+    private final String password = "admin";
     private Connection conn;
     private PreparedStatement pst;
     private ResultSet rs;
@@ -59,21 +59,19 @@ public class DatabaseHandler {
    
     public void addUser(User user){
         try {
-            pst=conn.prepareStatement("INSERT INTO USER VALUES (?,?)");
+            pst=conn.prepareStatement("INSERT INTO USERS VALUES (?,?)");
             pst.setString(1, user.getEmail());
             pst.setString(2, user.getPassword());
             pst.executeUpdate();
         } catch (SQLException ex) {
-            Logger.getLogger(DatabaseHandler.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
         }
     }
     
     public boolean checkUser(User user){
         try {
-            pst=conn.prepareStatement("SELECT * FROM USER WHERE EMAIL=? AND PASSWORD=? AND ID=?");
-            pst.setString(1, user.getEmail());
-            pst.setString(2, user.getPassword());
-            pst.setInt(3, user.getId());
+            pst=conn.prepareStatement("SELECT * FROM USER WHERE ID=?");
+            pst.setInt(1, user.getId());
             rs=pst.executeQuery();
             if(rs.next()){
                 return true;
@@ -83,7 +81,7 @@ public class DatabaseHandler {
                 return false;
             }
         } catch (SQLException ex) {
-            Logger.getLogger(DatabaseHandler.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
             return false;
         }
     }
@@ -92,27 +90,87 @@ public class DatabaseHandler {
         try {
             pst=conn.prepareStatement("INSERT INTO TRIP VALUES(?,?,?,?,?,?,?,?,?)");
             pst.setInt(1, trip.getId());
-            pst.setString(2, trip.getAveSpeeed());
-            pst.setString(3, trip.getDestination());
-            pst.setString(4, trip.getSource());
-            pst.setString(5, trip.getName());
-            pst.setString(6, trip.getStatus());
-            pst.setLong(7, trip.getDate());
-            pst.setLong(8, trip.getDuration());
-            pst.executeUpdate();
-            
+            pst.setString(2, trip.getName());
+            pst.setLong(3, trip.getDuration());
+            pst.setLong(4, trip.getDate());
+            pst.setString(5, trip.getStatus());
+            pst.setString(6, trip.getAveSpeeed());
+            pst.setString(7, trip.getSource());
+            pst.setString(8, trip.getDestination());
+            pst.executeUpdate();   
         } catch (SQLException ex) {
-            Logger.getLogger(DatabaseHandler.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
         }
-        
     }
+    
     public void addNotes(Notes[] notes,int tripId){
         try {
-            pst=conn.prepareStatement("INSERT INTO NOTES VALUES(?,?,?)");
-            
+            for(int i=0;i<notes.length;i++){
+                 pst=conn.prepareStatement("INSERT INTO NOTES VALUES(?,?,?)");
+                 pst.setInt(1,notes[i].getNoteId());
+                 pst.setString(2,notes[i].getContent());
+                 pst.setInt(3,notes[i].getTripId());
+                 pst.executeUpdate(); 
+            }
         } catch (SQLException ex) {
-            Logger.getLogger(DatabaseHandler.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
         }
-        
     }
+    
+    public ArrayList<Trip> getUserTrips(User user){
+         ArrayList<Integer>tripId = new ArrayList<>();
+         ArrayList<Trip>trips = new ArrayList<>();
+         try {
+            pst=conn.prepareStatement("SELECT * FROM users_Trips WHERE user_id=?");
+            pst.setInt(1, user.getId());
+            rs=pst.executeQuery();
+            while(rs.next()){
+                int id=rs.getInt(2);
+                tripId.add(id);
+            }
+            for(int i=0;i<tripId.size();i++){
+               pst=conn.prepareStatement("SELECT * FROM trips WHERE trip_id=?");
+               pst.setInt(1,tripId.get(i));
+               rs=pst.executeQuery();
+               while(rs.next()){
+                int id=rs.getInt(1);
+                String name=rs.getString(2);
+                long duration=rs.getLong(3);
+                long date=rs.getLong(4);
+                String status=rs.getString(5);
+                String speed=rs.getString(6);
+                String source=rs.getString(7);
+                String destination=rs.getString(8);
+                ArrayList<Notes>notes=getTripNotes(id);
+                Trip trip=new Trip(id,name,duration,date,status,speed,source,destination,notes);
+                trips.add(trip);
+            }         
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return trips;
+    }
+    
+    
+    
+    public ArrayList<Notes> getTripNotes(int tripId){
+        ArrayList<Notes>notes=new ArrayList<>();
+         try {
+            pst=conn.prepareStatement("SELECT * FROM notes WHERE trip_id=?");
+            pst.setInt(1, tripId);
+            rs=pst.executeQuery();
+            while(rs.next()){
+                int noteId=rs.getInt(1);
+                String content=rs.getString(2);
+                Notes note=new Notes(noteId,content);
+                notes.add(note);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return notes;
+    }
+    
+    
 }
