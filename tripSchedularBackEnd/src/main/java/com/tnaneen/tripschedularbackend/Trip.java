@@ -21,10 +21,11 @@ public class Trip {
     Long date;
     Long duration;
     ArrayList<Notes> notes;
+    String userEmail;
 
     public Trip() {
     }
-    public Trip(int id,String name,Long duration,Long date,String status,String avespeed,String source,String destination,ArrayList<Notes>notes) {    
+    public Trip(int id,String name,Long duration,Long date,String status,String avespeed,String source,String destination,ArrayList<Notes>notes,String email) {    
         this.id=id;
         this.name=name;
         this.duration=duration;
@@ -34,6 +35,15 @@ public class Trip {
         this.source=source;
         this.destination=destination;
         this.notes=notes;
+        this.userEmail=email;
+    }
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
     }
     
     public ArrayList<Notes> getNotes() {
@@ -43,7 +53,7 @@ public class Trip {
     public void setNotes(ArrayList<Notes> notes) {
         this.notes = notes;
     }
-
+    
     public Long getDate() {
         return date;
     }

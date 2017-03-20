@@ -15,6 +15,12 @@ public class Notes {
     public Notes() {
     }
 
+    public Notes(int noteId, int tripId, String content) {
+        this.noteId = noteId;
+        this.tripId = tripId;
+        this.content = content;
+    }
+
     public Notes(int noteId, String content) {
 
         this.noteId = noteId;

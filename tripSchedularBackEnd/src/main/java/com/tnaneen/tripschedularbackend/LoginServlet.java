@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author ehabm
  */
-@WebServlet(urlPatterns = {"/UserServlet"})
+@WebServlet(urlPatterns = {"/LoginServlet"})
 public class LoginServlet extends HttpServlet {
 
     /**
@@ -34,18 +34,14 @@ public class LoginServlet extends HttpServlet {
             throws ServletException, IOException {
         String email=request.getParameter("email");
         String password=request.getParameter("password");
-        String flag=request.getParameter("flag");
+        String flag="eshta";
         PrintWriter out=response.getWriter();
         if(flag.equals("app"))
         {
             if(new DatabaseHandler().checkUser(email, password))
             {
                 response.setContentType("application/json");
-                User user=new User();
-                user.setEmail(email);
-                user.setPassword(password);
-                user.setId(new DatabaseHandler().getUserId(email));
-                out.print(new DatabaseHandler().getUserTrips(user));
+                out.print(new DatabaseHandler().getUserTrips(email));
                 out.flush();
             }
             else
@@ -61,11 +57,7 @@ public class LoginServlet extends HttpServlet {
             if(new DatabaseHandler().checkUser(email,password))
             {
                 response.setContentType("application/json");
-                User user=new User();
-                user.setEmail(email);
-                user.setPassword(password);
-                user.setId(new DatabaseHandler().getUserId(email));
-                out.print(new DatabaseHandler().getUserTrips(user));
+                out.print(new DatabaseHandler().getUserTrips(email));
                 out.flush();
             }
             else

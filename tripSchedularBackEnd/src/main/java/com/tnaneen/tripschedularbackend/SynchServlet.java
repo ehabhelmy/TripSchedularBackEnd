@@ -41,6 +41,15 @@ public class SynchServlet extends HttpServlet {
             String email = request.getParameter("email");
             String jsonString = request.getParameter("trips");
             Gson gson = new Gson();
+//            ArrayList<Notes> notes=new ArrayList<>();
+//            notes.add(new Notes(1,12, "bel ganzbeel"));
+//            notes.add(new Notes(2,12, "bel eshta"));
+//            notes.add(new Notes(3,12, "bel fol"));
+//            ArrayList<Trip> test=new ArrayList<>();
+//            test.add(new Trip(12,"hamada",null,null,"done","123","bolaq","faisl",notes,"ehab@gmail.com"));
+//            test.add(new Trip(13,"roma",123123L,12321L,"done","123","bolaq","haram",notes,"ehab@gmail.com"));
+//            test.add(new Trip(15,"ehab",123123L,12321L,"done","123","bolaq","october",notes,"ehab@gmail.com"));
+//            System.out.println(gson.toJson(test));
             //parse json to arraylist of trips
             ArrayList<Trip> trips;
             java.lang.reflect.Type type = new TypeToken<ArrayList<Trip>>() {}.getType();
