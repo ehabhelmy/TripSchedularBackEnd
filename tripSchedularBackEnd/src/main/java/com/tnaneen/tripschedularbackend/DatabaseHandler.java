@@ -72,7 +72,7 @@ public class DatabaseHandler {
     public void addUser(User user) {
         try {
             pst = conn.prepareStatement("INSERT INTO USERS (user_email,user_password) VALUES (?,?)");
-            pst.setString(1, user.getEmail());
+            pst.setString(1, user.getEmail().toLowerCase());
             pst.setString(2, user.getPassword());
             pst.executeUpdate();
         } catch (SQLException ex) {
@@ -80,12 +80,30 @@ public class DatabaseHandler {
         }
     }
     
-    public boolean checkUser(String email,String password){
+    public boolean checkLogin(String email,String password){
         try {
             pst=conn.prepareStatement("SELECT * FROM USERS WHERE user_email=? AND user_password=?");
-            pst.setString(1, email);
+            pst.setString(1, email.toLowerCase());
             pst.setString(2, password);
             
+            ResultSet rs=pst.executeQuery();
+            if(rs.next()){
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return false;
+        }
+    }
+    
+    public boolean checkUserExisting(String email){
+        try {
+            pst=conn.prepareStatement("SELECT * FROM USERS WHERE user_email=?");
+            pst.setString(1, email.toLowerCase());            
             ResultSet rs=pst.executeQuery();
             if(rs.next()){
                 return true;
@@ -141,10 +159,10 @@ public class DatabaseHandler {
     }
     
     public ArrayList<Trip> getUserTrips(String email){
-         ArrayList<Integer>tripId = new ArrayList<>();
+//         ArrayList<Integer>tripId = new ArrayList<>();
          ArrayList<Trip>trips = new ArrayList<>();
          try {
-             System.out.println("getting user trips");
+            System.out.println("getting user trips");
             pst=conn.prepareStatement("SELECT * FROM Trips WHERE user_email=?");
             pst.setString(1, email);
             ResultSet rs = pst.executeQuery();
@@ -158,7 +176,7 @@ public class DatabaseHandler {
                     String source = rs.getString(7);
                     String destination = rs.getString(8);
                     String emaill=rs.getString(9);
-                    ArrayList<Notes> notes = getTripNotes(id);
+                    ArrayList<Notes> notes = getTripNotes(id,email);
                     Trip trip = new Trip(id, name, duration, date, status, speed, source, destination, notes,emaill);
                     trips.add(trip);
                 }
@@ -171,11 +189,12 @@ public class DatabaseHandler {
         
     }
 
-    public ArrayList<Notes> getTripNotes(int tripId) {
+    public ArrayList<Notes> getTripNotes(int tripId,String email) {
         ArrayList<Notes> notes = new ArrayList<>();
         try {
-            pst = conn.prepareStatement("SELECT * FROM notes WHERE trip_id=?");
+            pst = conn.prepareStatement("SELECT * FROM notes WHERE trip_id=? AND user_email=?");
             pst.setInt(1, tripId);
+            pst.setString(2, email);
             ResultSet rs = pst.executeQuery();
             while (rs.next()) {
                 int noteId = rs.getInt(1);

@@ -38,7 +38,7 @@ public class SignupServlet extends HttpServlet {
             String password = request.getParameter("password");
            
             DatabaseHandler db=new DatabaseHandler();
-            boolean check=db.checkUser(email,password);
+            boolean check=db.checkUserExisting(email);
             if(check==false){
                 User user=new User();
                 user.setEmail(email);
