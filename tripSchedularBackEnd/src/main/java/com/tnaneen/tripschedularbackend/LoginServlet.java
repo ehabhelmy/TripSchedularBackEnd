@@ -5,9 +5,10 @@ package com.tnaneen.tripschedularbackend;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
+import com.google.gson.Gson;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -32,36 +33,40 @@ public class LoginServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String email=request.getParameter("email");
-        String password=request.getParameter("password");
-        String flag="eshta";
-        PrintWriter out=response.getWriter();
-        if(flag.equals("app"))
-        {
-            if(new DatabaseHandler().checkUser(email, password))
-            {
-                response.setContentType("application/json");
-                out.print(new DatabaseHandler().getUserTrips(email));
+        response.setContentType("application/json");
+        String email = request.getParameter("email");
+        String password = request.getParameter("password");
+        String flag = request.getParameter("flag");
+        PrintWriter out = response.getWriter();
+        if (flag != null && flag.equals("app")) {
+            if (new DatabaseHandler().checkUserExisting(email)) {
+                //Return User Trips In Json Format
+                ArrayList<Trip> userTrips = new DatabaseHandler().getUserTrips(email);
+                Gson gson = new Gson();
+                String userTripsInJsonFormat = gson.toJson(userTrips);
+                out.print(userTripsInJsonFormat);
                 out.flush();
-            }
-            else
-            {
-                User user=new User();
+            } else {
+                User user = new User();
                 user.setEmail(email);
                 user.setPassword(password);
                 new DatabaseHandler().addUser(user);
-            }
-        }
-        else
-        {
-            if(new DatabaseHandler().checkUser(email,password))
-            {
-                response.setContentType("application/json");
-                out.print(new DatabaseHandler().getUserTrips(email));
+                //Return User Trips In Json Format
+                ArrayList<Trip> userTrips = new DatabaseHandler().getUserTrips(email);
+                Gson gson = new Gson();
+                String userTripsInJsonFormat = gson.toJson(userTrips);
+                out.print(userTripsInJsonFormat);
                 out.flush();
             }
-            else
-            {
+        } else {
+            if (new DatabaseHandler().checkLogin(email, password)) {
+                //Return User Trips In Json Format
+                ArrayList<Trip> userTrips = new DatabaseHandler().getUserTrips(email);
+                Gson gson = new Gson();
+                String userTripsInJsonFormat = gson.toJson(userTrips);
+                out.print(userTripsInJsonFormat);
+                out.flush();
+            } else {
                 out.print("not exist");
                 out.flush();
             }

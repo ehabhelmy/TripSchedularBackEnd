@@ -56,11 +56,11 @@ public class SynchServlet extends HttpServlet {
             trips = gson.fromJson(jsonString, type);
             System.out.println("----jsonString: " + jsonString);
             System.out.println("-----Arr length: " + trips.size());
-
+            System.out.println(email);    
             DatabaseHandler db = new DatabaseHandler();
             db.deleteAllUserTrip(email);
             for (int i = 0; i < trips.size(); i++) {
-                db.addTrip(trips.get(i));
+                db.addTrip(trips.get(i),email);
             }
 
         }
